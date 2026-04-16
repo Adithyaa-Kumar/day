@@ -1,15 +1,15 @@
 import os
 
-from flask import Flask, render_template, send_from_directory
+from flask import Flask, send_from_directory
 from pathlib import Path
 
-app = Flask(__name__)
+app = Flask(__name__, static_folder='static', static_url_path='/static')
 IMAGE_DIR = Path(app.root_path) / "image"
 
 
 @app.route("/")
 def index():
-    return render_template("index.html")
+    return send_from_directory(app.root_path, "index.html")
 
 
 @app.route("/image/<path:filename>")

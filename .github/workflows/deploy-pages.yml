@@ -36,50 +36,23 @@ jobs:
           mkdir -p _site/static/css _site/static/js _site/image
           cp -r image/. _site/image/
           cp -r static/. _site/static/
+          cp index.html _site/
 
           python - <<'PY'
           from pathlib import Path
-          import re
 
-          root = Path('.')
-          site = root / '_site'
-
-          template = (root / 'templates' / 'index.html').read_text(encoding='utf-8')
-
-          html = template
-          html = re.sub(
-              r"\{\{\s*url_for\('static',\s*filename='css/style\\.css'\)\s*\}\}\?v=[^\"']*",
-              'static/css/style.css',
-              html,
-          )
-          html = re.sub(
-              r"\{\{\s*url_for\('static',\s*filename='js/script\\.js'\)\s*\}\}\?v=[^\"']*",
-              'static/js/script.js',
-              html,
-          )
-          html = re.sub(
-              r"\{\{\s*url_for\('static',\s*filename='cake_animation_embed\\.html'\)\s*\}\}",
-              'static/cake_animation_embed.html',
-              html,
-          )
-          html = re.sub(
-              r"\{\{\s*url_for\('serve_image',\s*filename='([^']+)'\)\s*\}\}",
-              r'image/\1',
-              html,
-          )
-          html = html.replace('="/image/', '="image/')
-          (site / 'index.html').write_text(html, encoding='utf-8')
-
-          js_path = root / 'static' / 'js' / 'script.js'
+          site = Path('_site')
+          
+          js_path = site / 'static' / 'js' / 'script.js'
           js = js_path.read_text(encoding='utf-8')
           js = js.replace("'/image/", "'image/").replace('"/image/', '"image/')
-          (site / 'static' / 'js' / 'script.js').write_text(js, encoding='utf-8')
+          js_path.write_text(js, encoding='utf-8')
 
-          css_path = root / 'static' / 'css' / 'style.css'
+          css_path = site / 'static' / 'css' / 'style.css'
           css = css_path.read_text(encoding='utf-8')
           css = css.replace("url('/image/", "url('../../image/")
           css = css.replace('url("/image/', 'url("../../image/')
-          (site / 'static' / 'css' / 'style.css').write_text(css, encoding='utf-8')
+          css_path.write_text(css, encoding='utf-8')
 
           (site / '.nojekyll').write_text('', encoding='utf-8')
           PY
