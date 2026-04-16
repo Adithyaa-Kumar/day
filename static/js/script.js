@@ -91,7 +91,7 @@ function buildTargetDate() {
   // Update this target time as needed.
   const now = new Date();
   const target = new Date(now);
-  target.setHours(23, 54, 0, 0);
+  target.setHours(00, 12, 0, 0);
 
   if (target <= now) {
     target.setDate(target.getDate() + 1);
