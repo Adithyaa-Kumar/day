@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Harshi Birthday Cinematic Story</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://unpkg.com/aos@2.3.1/dist/aos.css" />
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}?v=20260416-1" />
+</head>
+<body>
+  <div id="bg-gradient"></div>
+  <div id="global-glow-orbs" aria-hidden="true">
+    <span class="orb orb-a"></span>
+    <span class="orb orb-b"></span>
+    <span class="orb orb-c"></span>
+  </div>
+  <div id="particle-layer" aria-hidden="true"></div>
+  <div id="heart-layer" aria-hidden="true"></div>
+
+  <main id="app">
+
+    <section class="story-section active" id="section-1" data-section="0">
+      <div class="scene-overlay overlay-grid"></div>
+      <div class="glass-panel countdown-panel" data-aos="zoom-in-up">
+        <p class="eyebrow">Birthday Countdown</p>
+        <h1 class="title-xl">Harshi's Birthday Unlocks In 💙</h1>
+        <p class="subtitle">When this timer reaches zero, happiness explodes and your surprise begins.</p>
+
+        <div class="countdown-stage">
+          <img class="timer-side-gif timer-side-left" src="{{ url_for('serve_image', filename='timerleft.gif') }}" alt="Timer left decoration" />
+          <img class="timer-side-gif timer-side-right" src="{{ url_for('serve_image', filename='timerright.gif') }}" alt="Timer right decoration" />
+
+          <svg class="countdown-ring" viewBox="0 0 240 240" aria-hidden="true">
+            <circle class="ring-bg" cx="120" cy="120" r="104"></circle>
+            <circle id="ring-progress" class="ring-progress" cx="120" cy="120" r="104"></circle>
+          </svg>
+
+          <div class="timer-core">
+            <div class="time-block"><span id="timer-hh">00</span><small>HH</small></div>
+            <span class="time-sep">:</span>
+            <div class="time-block"><span id="timer-mm">00</span><small>MM</small></div>
+            <span class="time-sep">:</span>
+            <div class="time-block"><span id="timer-ss">00</span><small>SS</small></div>
+            <span class="timer-spark spark-1">✨</span>
+            <span class="timer-spark spark-2">💙</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="story-section" id="section-2" data-section="1">
+      <div class="glass-panel ready-panel birthday-entry" data-aos="fade-up">
+        <p class="eyebrow">Birthday Moment</p>
+        <h2 class="title-lg">Harshi, today is your day and you deserve all the love in the world 💙</h2>
+        <p class="subtitle">This little journey is made just for your smile, your chaos, and your beautiful heart.</p>
+
+        <div class="hero-photo image-free">
+          <img src="{{ url_for('serve_image', filename='3bear.png') }}" alt="3 bear" />
+        </div>
+
+        <div class="word-wave" id="birthday-word-wave" aria-hidden="true"></div>
+
+        <div class="btn-row no-zone" id="ready-zone">
+          <button id="ready-yes" class="btn-primary">Start Surprise 🎉</button>
+          <button id="ready-no" class="btn-secondary escape-btn">NO 😈</button>
+        </div>
+      </div>
+    </section>
+
+    <section class="story-section" id="section-3" data-section="2">
+      <div class="scene-overlay overlay-hearts"></div>
+      <div class="glass-panel tease-panel" data-aos="fade-up">
+        <h2 class="title-lg">You thought I'd reveal everything instantly? Absolutely not 😏</h2>
+        <div id="tease-photo-wrap" class="tease-photo image-free hidden">
+          <img
+            id="tease-photo-img"
+            src="{{ url_for('serve_image', filename='tease2.gif') }}"
+            data-tease-stage-0="{{ url_for('serve_image', filename='tease2.gif') }}"
+            data-tease-stage-1="{{ url_for('serve_image', filename='tease1.png') }}"
+            data-tease-stage-2="{{ url_for('serve_image', filename='tease3.gif') }}"
+            data-tease-stage-3="{{ url_for('serve_image', filename='tease4.gif') }}"
+            data-tease-stage-4="{{ url_for('serve_image', filename='finaltease.gif') }}"
+            alt="Tease moment"
+          />
+        </div>
+        <button id="tease-next" class="btn-primary">Continue ➜</button>
+      </div>
+    </section>
+
+    <section class="story-section" id="section-4" data-section="3">
+      <div class="glass-panel" data-aos="fade-up">
+        <h2 class="title-lg">Are you the bestest friend ever? 🤔</h2>
+        <div class="btn-row">
+          <button id="friend-yes" class="btn-primary">YES obviously 😌</button>
+          <button id="friend-no" class="btn-secondary">NO</button>
+        </div>
+        <p id="friend-status" class="status-line"></p>
+
+        <div id="wrong-bear-wrap" class="wrong-bear-wrap hidden">
+          <img id="wrong-bear-img" src="{{ url_for('serve_image', filename='wronganswerbear.png') }}" alt="Wrong answer bear" />
+        </div>
+      </div>
+    </section>
+
+    <section class="story-section" id="section-5" data-section="4">
+      <div class="glass-panel emotional-panel birthday-wish-panel" data-aos="zoom-in">
+        <p class="eyebrow">Birthday Wish</p>
+        <h2 class="title-xl glow-text reveal-step" id="wish-title">Happy Birthday Harshi 💙</h2>
+        <p class="script-line reveal-step" id="wish-line-1">You make ordinary days feel special.</p>
+        <p class="subtitle reveal-step" id="wish-line-2">Thank you for being my safe place, my loudest laugh, and my calm in every storm. I hope this year gives you everything your heart has quietly wished for.</p>
+        <div class="love-rotator reveal-step" id="love-rotator" aria-live="polite"></div>
+        <div class="wish-photo image-free wish-photo-large reveal-step" id="wish-image-wrap">
+          <video id="birthday-video" playsinline preload="auto" autoplay muted loop tabindex="-1" aria-hidden="true" disablepictureinpicture controlslist="nodownload noplaybackrate nofullscreen noremoteplayback">
+            <source src="{{ url_for('serve_image', filename='birthday.mp4') }}" type="video/mp4" />
+          </video>
+        </div>
+        <button id="to-memory-intro" class="btn-primary still-button reveal-step" data-wish-redirect="true">Continue ✨</button>
+      </div>
+    </section>
+
+    <section class="story-section" id="section-6" data-section="5">
+      <div class="scene-overlay overlay-rays"></div>
+      <div class="glass-panel" data-aos="fade-up">
+        <div class="transition-gift-bear image-free">
+          <img src="{{ url_for('serve_image', filename='giftgivingbear.png') }}" alt="Gift giving bear" />
+        </div>
+        <p class="eyebrow">Memory lane loading</p>
+        <h2 class="title-lg">Hold this moment...</h2>
+        <p class="subtitle">A tiny museum of smiles, memes, and late-night nonsense 💫</p>
+      </div>
+    </section>
+
+    <section class="story-section" id="section-7" data-section="6">
+      <div class="scene-overlay overlay-wave"></div>
+      <div class="glass-panel surprise-gate" data-aos="zoom-in-up">
+        <h2 class="title-lg">One last deep breath... your gifts are waiting 🎁</h2>
+        <p class="subtitle">And the Biggest Surprise is here.</p>
+
+        <div class="single-surprise-photo">
+          <img src="{{ url_for('serve_image', filename='celebbear.gif') }}" alt="Celebration bear" />
+        </div>
+
+        <button id="to-highlight" class="btn-primary still-button">Open The Gift Vault 💙</button>
+      </div>
+    </section>
+
+    <section class="story-section section-highlight" id="section-8" data-section="7">
+      <div class="highlight-backdrop"></div>
+      <div class="glass-panel highlight-panel" data-aos="fade-up">
+        <p class="eyebrow">Surprise Vault</p>
+        <h2 class="title-xl">Four gifts, one floating sky of happiness 💙</h2>
+        <p class="subtitle">Open the boxes and let the memories bloom.</p>
+
+        <div class="gift-float-stage">
+          <button class="gift-float-btn g1" data-open-gift="1" type="button"><img src="{{ url_for('serve_image', filename='giftbox.png') }}" alt="Gift box 1" /><span>Gift 1</span></button>
+          <button class="gift-float-btn g2" data-open-gift="2" type="button"><img src="{{ url_for('serve_image', filename='giftbox.png') }}" alt="Gift box 2" /><span>Gift 2</span></button>
+          <button class="gift-float-btn g3" data-open-gift="3" type="button"><img src="{{ url_for('serve_image', filename='giftbox.png') }}" alt="Gift box 3" /><span>Gift 3</span></button>
+          <button class="gift-float-btn g4" data-open-gift="4" type="button"><img src="{{ url_for('serve_image', filename='giftbox.png') }}" alt="Gift box 4" /><span>Gift 4</span></button>
+        </div>
+      </div>
+    </section>
+
+    <section class="story-section gift-detail" id="gift-page-1" data-section="8">
+      <div class="glass-panel gift-player-panel" data-aos="zoom-in-up">
+        <p class="eyebrow">For You</p>
+        <h2 class="title-lg">A tiny memory, a big smile 💙</h2>
+        <div class="player-decor">💙 ✿ 💙 ✿</div>
+        <div class="player-frame frame-art gift-1">
+          <video id="gift-video-1" playsinline preload="metadata" muted>
+            <source src="{{ url_for('serve_image', filename='gift1.mp4') }}" type="video/mp4" />
+          </video>
+        </div>
+        <button class="btn-secondary gift-back" data-back-to-gifts="true">← Back to gifts</button>
+      </div>
+    </section>
+
+    <section class="story-section gift-detail" id="gift-page-2" data-section="9">
+      <div class="glass-panel gift-player-panel" data-aos="zoom-in-up">
+        <p class="eyebrow">For You</p>
+        <h2 class="title-lg">Another little spark for your day 🌸</h2>
+        <div class="player-decor">✿ 💙 ✿ 💙</div>
+        <div class="player-frame frame-art gift-2">
+          <video id="gift-video-2" playsinline preload="metadata" muted>
+            <source src="{{ url_for('serve_image', filename='gift2.mp4') }}" type="video/mp4" />
+          </video>
+        </div>
+        <button class="btn-secondary gift-back" data-back-to-gifts="true">← Back to gifts</button>
+      </div>
+    </section>
+
+    <section class="story-section gift-detail" id="gift-page-3" data-section="10">
+      <div class="glass-panel gift-player-panel" data-aos="zoom-in-up">
+        <p class="eyebrow">For You</p>
+        <h2 class="title-lg">A warm hug in video form 🫶</h2>
+        <div class="player-decor">💙 ✿ 💙 ✿</div>
+        <div class="player-frame frame-art gift-3">
+          <video id="gift-video-3" playsinline preload="metadata">
+            <source src="{{ url_for('serve_image', filename='gift3.mp4') }}" type="video/mp4" />
+          </video>
+          <button class="video-play-btn" data-video-id="gift-video-3" aria-label="Play/Pause">▶</button>
+          <button class="video-replay-btn" data-video-id="gift-video-3" aria-label="Replay">⟲</button>
+        </div>
+        <button class="btn-secondary gift-back" data-back-to-gifts="true">← Back to gifts</button>
+      </div>
+    </section>
+
+    <section class="story-section gift-detail" id="gift-page-4" data-section="11">
+      <div class="glass-panel gift-player-panel" data-aos="zoom-in-up">
+        <p class="eyebrow">Main Gift</p>
+        <h2 class="title-lg">This one is yours to play your way 🎬</h2>
+        <div class="player-decor">✿ 💙 ✿ 💙</div>
+        <div class="player-frame frame-art">
+          <video id="gift-video-4" playsinline preload="metadata">
+            <source src="{{ url_for('serve_image', filename='gift4.mp4') }}" type="video/mp4" />
+          </video>
+          <button class="video-play-btn" data-video-id="gift-video-4" aria-label="Play/Pause">▶</button>
+          <button class="video-replay-btn" data-video-id="gift-video-4" aria-label="Replay">⟲</button>
+        </div>
+        <div class="btn-row">
+          <button class="btn-secondary gift-back" data-back-to-gifts="true">← Back to gifts</button>
+          <button id="to-cake" class="btn-primary">Next Surprise 🎂</button>
+        </div>
+      </div>
+    </section>
+
+    <section class="story-section" id="section-9" data-section="12">
+      <div class="glass-panel cake-panel" data-aos="zoom-in-up">
+        <p class="eyebrow">Calorie Free Zone</p>
+        <h2 class="title-lg">A 3D Birthday Cake for You 🎂</h2>
+        <p class="subtitle">Calories: 0. Love: unlimited. Make a wish and blow! 💙</p>
+
+        <div class="cake-stage">
+          <iframe
+            id="cake-frame"
+            src="{{ url_for('static', filename='cake_animation_embed.html') }}"
+            title="Birthday cake animation"
+            class="cake-animation-frame"
+            loading="eager"
+          ></iframe>
+        </div>
+
+        <button id="blow-btn" class="btn-primary">BLOW 💨</button>
+      </div>
+    </section>
+
+    <section class="story-section" id="section-10" data-section="13">
+      <div class="glass-panel final-panel" data-aos="fade-up">
+        <p class="eyebrow">Emotional Climax</p>
+        <img class="final-bear" src="{{ url_for('serve_image', filename='bearhug.gif') }}" alt="Bear hug" />
+        <h2 class="title-xl script-line typewriter-line" data-text="No matter where life takes us,"></h2>
+        <p class="title-lg typewriter-line" data-text="you will always be deeply special to me, Harshi 💙"></p>
+        <p class="subtitle typewriter-line" data-text="Happy Birthday. May this year hold softer days, louder laughs, and endless beautiful moments."></p>
+      </div>
+    </section>
+
+    <button id="music-toggle" class="music-pill" type="button" aria-label="Toggle music">🎵 Play music</button>
+    <audio id="bg-music" loop preload="none">
+      <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" type="audio/mpeg" />
+    </audio>
+
+    <div class="credit-pill">Made with whole heart 💙</div>
+  </main>
+
+  <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+  <script src="{{ url_for('static', filename='js/script.js') }}?v=20260416-1"></script>
+</body>
+</html>
