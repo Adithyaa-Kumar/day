@@ -69,6 +69,7 @@ function showSection(index) {
   if (index === 4) {
     startLoveRotator();
     runBirthdayRevealSequence();
+    triggerConfetti(false);
 
     const birthdayVideo = document.getElementById('birthday-video');
     if (birthdayVideo) {
@@ -90,7 +91,7 @@ function buildTargetDate() {
   // Update this target time as needed.
   const now = new Date();
   const target = new Date(now);
-  target.setHours(18, 15, 0, 0);
+  target.setHours(23, 16, 0, 0);
 
   if (target <= now) {
     target.setDate(target.getDate() + 1);
@@ -193,12 +194,15 @@ function moveNoButton() {
   button.style.top = `${Math.floor(Math.random() * maxY)}px`;
 }
 
-function moveTeaseButton() {
+function moveTeaseButtonRandom() {
   const button = document.getElementById('tease-next');
-  const panel = button.closest('.glass-panel');
+  const panel = button?.closest('.glass-panel');
+  if (!button || !panel) {
+    return;
+  }
+
   const panelRect = panel.getBoundingClientRect();
   const btnRect = button.getBoundingClientRect();
-
   const maxX = Math.max(18, panelRect.width - btnRect.width - 24);
   const maxY = Math.max(18, panelRect.height - btnRect.height - 24);
 
@@ -210,18 +214,26 @@ function moveTeaseButton() {
 
 function resetTeaseSequence() {
   const button = document.getElementById('tease-next');
-  const teaseWrap = document.getElementById('tease-photo-wrap');
   const teaseImage = document.getElementById('tease-photo-img');
+  const teaseTitle = document.getElementById('tease-title');
 
   teaseClickCount = 0;
-  button.style.position = 'relative';
-  button.style.left = 'auto';
-  button.style.top = 'auto';
-  button.style.transform = 'none';
-  button.textContent = 'Continue ➜';
+  if (button) {
+    button.disabled = false;
+    button.textContent = 'Continue';
+    button.style.position = 'relative';
+    button.style.left = 'auto';
+    button.style.top = 'auto';
+    button.style.transform = 'none';
+  }
 
-  teaseWrap.classList.add('hidden');
-  teaseImage.src = teaseImage.dataset.teaseStage0 || teaseImage.src;
+  if (teaseImage) {
+    teaseImage.src = '';
+  }
+
+  if (teaseTitle) {
+    teaseTitle.textContent = 'Incoming surprise...';
+  }
 }
 
 function openGiftPage(giftNumber) {
@@ -320,51 +332,48 @@ function startLoveRotator() {
 
 function setupTeaseSequence() {
   const button = document.getElementById('tease-next');
-  const teaseWrap = document.getElementById('tease-photo-wrap');
   const teaseImage = document.getElementById('tease-photo-img');
+  const teaseTitle = document.getElementById('tease-title');
 
-  const teaseStages = [
-    teaseImage.dataset.teaseStage0,
-    teaseImage.dataset.teaseStage1,
-    teaseImage.dataset.teaseStage2,
-    teaseImage.dataset.teaseStage3,
-    teaseImage.dataset.teaseStage4
-  ].filter(Boolean);
-
-  const showStage = (index) => {
-    const src = teaseStages[index];
-    if (!src) {
-      return;
-    }
-
-    teaseWrap.classList.remove('hidden');
-    teaseImage.src = src;
-  };
+  if (!button || !teaseImage) {
+    return;
+  }
 
   button.addEventListener('click', () => {
-    if (teaseClickCount === 0) {
-      showStage(0);
-      button.textContent = 'Not yet 💙';
-      teaseClickCount = 1;
-      return;
-    }
+    const teaseStages = [
+      teaseImage.getAttribute('data-tease-stage-0'),
+      teaseImage.getAttribute('data-tease-stage-1'),
+      teaseImage.getAttribute('data-tease-stage-2'),
+      teaseImage.getAttribute('data-tease-stage-3'),
+      teaseImage.getAttribute('data-tease-stage-4')
+    ];
 
-    if (teaseClickCount >= 1 && teaseClickCount <= 3) {
-      showStage(teaseClickCount);
+    if (teaseClickCount <= 4) {
+      const src = teaseStages[teaseClickCount];
+      if (src) {
+        teaseImage.src = src;
+      }
+
+      if (teaseClickCount === 0 && teaseTitle) {
+        teaseTitle.textContent = "Avlo easy ah surprise ah paaka mudiyadhu ma kannu 😏";
+      }
+
+      if (teaseClickCount === 4 && teaseTitle) {
+        teaseTitle.textContent = 'Seri Seri... Ala koodadhu. Surprise ah paarungoo 🫂✨';
+      }
+
       teaseClickCount += 1;
-      button.textContent = `Not yet ${'💙'.repeat(teaseClickCount)}`;
-      moveTeaseButton();
-      return;
-    }
 
-    if (teaseClickCount === 4) {
-      showStage(4);
-      button.style.position = 'relative';
-      button.style.left = 'auto';
-      button.style.top = 'auto';
-      button.style.transform = 'none';
-      button.textContent = 'Okay Fine, Continue';
-      teaseClickCount = 5;
+      if (teaseClickCount <= 4) {
+        button.textContent = `Not yet ${'💙'.repeat(teaseClickCount)}`;
+        moveTeaseButtonRandom();
+      } else {
+        button.textContent = 'Okay fine 😒';
+        button.style.position = 'relative';
+        button.style.left = 'auto';
+        button.style.top = 'auto';
+        button.style.transform = 'none';
+      }
       return;
     }
 
