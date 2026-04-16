@@ -26,6 +26,7 @@ let teaseClickCount = 0;
 let loveRotatorTimer = null;
 let birthdayRevealToken = 0;
 let cakeFrameReady = false;
+let heavyVideosPrimed = false;
 
 function getAssetBasePath() {
   const scriptEl = document.querySelector('script[src*="static/js/script.js"]');
@@ -51,6 +52,69 @@ function toAssetUrl(path) {
 
   const cleanPath = path.replace(/^\/+/, '');
   return `${assetBasePath}${cleanPath}`;
+}
+
+function preloadImage(path) {
+  return new Promise((resolve, reject) => {
+    const img = new Image();
+    img.onload = () => resolve(path);
+    img.onerror = reject;
+    img.src = toAssetUrl(path);
+  });
+}
+
+function setImageWithFallback(imgEl, candidates) {
+  if (!imgEl || !Array.isArray(candidates) || candidates.length === 0) {
+    return;
+  }
+
+  const tryIndex = (idx) => {
+    if (idx >= candidates.length) {
+      return;
+    }
+
+    const target = toAssetUrl(candidates[idx]);
+    const testImg = new Image();
+    testImg.onload = () => {
+      imgEl.src = target;
+    };
+    testImg.onerror = () => tryIndex(idx + 1);
+    testImg.src = target;
+  };
+
+  tryIndex(0);
+}
+
+function preloadCriticalImages() {
+  const teaseCandidates = ['image/tease2.gif', 'image/tease1.png', 'image/tease3.gif', 'image/tease4.gif', 'image/finaltease.gif'];
+  teaseCandidates.forEach((path) => {
+    preloadImage(path).catch(() => {
+      // Keep runtime resilient even if one asset fails to preload.
+    });
+  });
+
+  ['image/wronganswerbear1.gif', 'image/wronganswerbear.gif', 'image/wronganswerbear1.png', 'image/wronganswerbear.png'].forEach((path) => {
+    preloadImage(path).catch(() => {
+      // Fallback options are handled when assigning image src.
+    });
+  });
+}
+
+function primeHeavyVideos() {
+  if (heavyVideosPrimed) {
+    return;
+  }
+
+  heavyVideosPrimed = true;
+  ['birthday-video', 'gift-video-3', 'gift-video-4'].forEach((id) => {
+    const video = document.getElementById(id);
+    if (!video) {
+      return;
+    }
+
+    video.preload = 'auto';
+    video.load();
+  });
 }
 
 function normalizeMediaUrls() {
@@ -118,6 +182,7 @@ function showSection(index) {
     startLoveRotator();
     runBirthdayRevealSequence();
     triggerConfetti(false);
+    primeHeavyVideos();
 
     const birthdayVideo = document.getElementById('birthday-video');
     if (birthdayVideo) {
@@ -133,13 +198,16 @@ function showSection(index) {
   if (index >= 8 && index <= 9) {
     scheduleGiftAutoplay(index);
   }
+
+  if (index >= 7) {
+    primeHeavyVideos();
+  }
 }
 
 function buildTargetDate() {
-  // Update this target time as needed.
   const now = new Date();
   const target = new Date(now);
-  target.setHours(00, 26, 0, 0);
+  target.setHours(0, 0, 0, 0);
 
   if (target <= now) {
     target.setDate(target.getDate() + 1);
@@ -244,19 +312,14 @@ function moveNoButton() {
 
 function moveTeaseButtonRandom() {
   const button = document.getElementById('tease-next');
-  const panel = button?.closest('.glass-panel');
-  if (!button || !panel) {
+  if (!button) {
     return;
   }
 
-  const panelRect = panel.getBoundingClientRect();
-  const btnRect = button.getBoundingClientRect();
-  const maxX = Math.max(18, panelRect.width - btnRect.width - 24);
-  const maxY = Math.max(18, panelRect.height - btnRect.height - 24);
-
-  button.style.position = 'absolute';
-  button.style.left = `${Math.floor(Math.random() * maxX)}px`;
-  button.style.top = `${Math.floor(Math.random() * maxY)}px`;
+  // Keep this button stable so users can quickly progress through tease frames.
+  button.style.position = 'relative';
+  button.style.left = 'auto';
+  button.style.top = 'auto';
   button.style.transform = 'none';
 }
 
@@ -668,9 +731,11 @@ function setupInteractions() {
     ];
 
     status.textContent = lines[Math.floor(Math.random() * lines.length)];
-    wrongImg.src = wrongAnswerClicks % 2 === 1
-      ? toAssetUrl('image/wronganswerbear1.gif')
-      : toAssetUrl('image/wronganswerbear.gif');
+    if (wrongAnswerClicks % 2 === 1) {
+      setImageWithFallback(wrongImg, ['image/wronganswerbear1.gif', 'image/wronganswerbear1.png']);
+    } else {
+      setImageWithFallback(wrongImg, ['image/wronganswerbear.gif', 'image/wronganswerbear.png']);
+    }
     wrongWrap.classList.remove('hidden');
   });
 
@@ -737,6 +802,7 @@ window.moveNoButton = moveNoButton;
 
 document.addEventListener('DOMContentLoaded', () => {
   normalizeMediaUrls();
+  preloadCriticalImages();
   createParticles();
   createFloatingHearts();
   initAOS();
