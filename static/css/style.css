@@ -385,7 +385,7 @@ body {
 
 .bow-decor {
   transform: rotate(-6deg) scale(1.02);
-  background-image: url('/image/bow.gif');
+  background-image: url('../../image/bow.png');
 }
 
 .titch-shell {
@@ -846,7 +846,7 @@ body {
   content: "";
   position: absolute;
   inset: 0;
-  background: url('/image/frame.png') center/100% 100% no-repeat;
+  background: none;
   pointer-events: none;
   z-index: 2;
 }

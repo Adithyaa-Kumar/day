@@ -27,6 +27,54 @@ let loveRotatorTimer = null;
 let birthdayRevealToken = 0;
 let cakeFrameReady = false;
 
+function getAssetBasePath() {
+  const scriptEl = document.querySelector('script[src*="static/js/script.js"]');
+  if (scriptEl?.src) {
+    const scriptUrl = new URL(scriptEl.src, window.location.href);
+    return scriptUrl.pathname.replace(/static\/js\/script\.js$/, '');
+  }
+
+  const path = window.location.pathname;
+  return path.endsWith('/') ? path : `${path.slice(0, path.lastIndexOf('/') + 1)}`;
+}
+
+const assetBasePath = getAssetBasePath();
+
+function toAssetUrl(path) {
+  if (!path) {
+    return path;
+  }
+
+  if (/^(https?:|data:|blob:|\/\/)/i.test(path)) {
+    return path;
+  }
+
+  const cleanPath = path.replace(/^\/+/, '');
+  return `${assetBasePath}${cleanPath}`;
+}
+
+function normalizeMediaUrls() {
+  document.querySelectorAll('img[src^="image/"], source[src^="image/"]').forEach((el) => {
+    el.setAttribute('src', toAssetUrl(el.getAttribute('src')));
+  });
+
+  const teaseImage = document.getElementById('tease-photo-img');
+  if (teaseImage) {
+    for (let i = 0; i <= 4; i += 1) {
+      const key = `data-tease-stage-${i}`;
+      const current = teaseImage.getAttribute(key);
+      if (current) {
+        teaseImage.setAttribute(key, toAssetUrl(current));
+      }
+    }
+  }
+
+  // Ensure updated source URLs are reflected by video elements.
+  document.querySelectorAll('video').forEach((video) => {
+    video.load();
+  });
+}
+
 function showSection(index) {
   if (index < 0 || index >= sections.length) {
     return;
@@ -91,7 +139,7 @@ function buildTargetDate() {
   // Update this target time as needed.
   const now = new Date();
   const target = new Date(now);
-  target.setHours(00, 20, 0, 0);
+  target.setHours(00, 26, 0, 0);
 
   if (target <= now) {
     target.setDate(target.getDate() + 1);
@@ -620,7 +668,9 @@ function setupInteractions() {
     ];
 
     status.textContent = lines[Math.floor(Math.random() * lines.length)];
-    wrongImg.src = wrongAnswerClicks % 2 === 1 ? '/image/wronganswerbear1.gif' : '/image/wronganswerbear.gif';
+    wrongImg.src = wrongAnswerClicks % 2 === 1
+      ? toAssetUrl('image/wronganswerbear1.gif')
+      : toAssetUrl('image/wronganswerbear.gif');
     wrongWrap.classList.remove('hidden');
   });
 
@@ -686,6 +736,7 @@ window.triggerConfetti = triggerConfetti;
 window.moveNoButton = moveNoButton;
 
 document.addEventListener('DOMContentLoaded', () => {
+  normalizeMediaUrls();
   createParticles();
   createFloatingHearts();
   initAOS();
