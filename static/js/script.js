@@ -207,7 +207,7 @@ function showSection(index) {
 function buildTargetDate() {
   const now = new Date();
   const target = new Date(now);
-  target.setHours(13, 7, 0, 0);
+  target.setHours(19, 38, 0, 0);
 
   if (target <= now) {
     target.setDate(target.getDate() + 1);
